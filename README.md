@@ -1,2 +1,32 @@
 # LEGEND-EDITOR-APP
 Professional Android Video Editor
+name: Unpack Project ZIP
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack and commit
+        run: |
+          if [ ! -f legend-editor-phase0.zip ]; then
+            echo "No legend-editor-phase0.zip in repo root. Nothing to do."
+            exit 0
+          fi
+          rm -rf /tmp/unz && mkdir /tmp/unz
+          unzip -q legend-editor-phase0.zip -d /tmp/unz
+          rsync -a --exclude='.github' /tmp/unz/ ./
+          rm legend-editor-phase0.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Unpack Phase 0 project"
+          git push
