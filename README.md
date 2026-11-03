@@ -1,32 +1,34 @@
-# LEGEND-EDITOR-APP
-Professional Android Video Editor
-name: Unpack Project ZIP
+# LEGEND EDITOR
 
-on:
-  push:
-  workflow_dispatch:
+Professional Android video editor (work in progress).
 
-permissions:
-  contents: write
+## Status: Phase 0 (build pipeline), NOT yet verified
 
-jobs:
-  unpack:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
+This repository contains only a Kotlin + Jetpack Compose launch screen and a
+GitHub Actions workflow that builds a debug APK. It has not been built yet.
+Phase 0 is complete only when a GitHub Actions run is green and the APK
+installs and opens on a device.
 
-      - name: Unpack and commit
-        run: |
-          if [ ! -f legend-editor-phase0.zip ]; then
-            echo "No legend-editor-phase0.zip in repo root. Nothing to do."
-            exit 0
-          fi
-          rm -rf /tmp/unz && mkdir /tmp/unz
-          unzip -q legend-editor-phase0.zip -d /tmp/unz
-          rsync -a --exclude='.github' /tmp/unz/ ./
-          rm legend-editor-phase0.zip
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "Unpack Phase 0 project"
-          git push
+## How the APK is built
+
+- Workflow: `.github/workflows/android.yml`
+- Triggers: every push, or manually via Actions > Build Debug APK > Run workflow
+- Toolchain: JDK 17, Gradle 8.10.2 (installed by the workflow), Android Gradle
+  Plugin 8.7.3, Kotlin 2.0.21, Compose BOM 2024.10.01
+- Output: artifact `LEGEND-EDITOR-debug-apk` (a ZIP containing `app-debug.apk`)
+- No Gradle wrapper is committed. The workflow installs a pinned Gradle version.
+
+## Known limitation
+
+Each CI run creates a new debug signing key, so installing a newer build over an
+older one can fail. Uninstall the old build first.
+
+## Feature status
+
+| Item | Status |
+|---|---|
+| Android project (Kotlin, Compose) | Written, unbuilt |
+| GitHub Actions debug APK build | Written, unbuilt |
+| Launch screen | Written, unbuilt |
+| Fixed debug signing key | Pending |
+| Phase 1 (home, navigation, projects) | Not started |
