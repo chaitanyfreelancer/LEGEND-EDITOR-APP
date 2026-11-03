@@ -1,0 +1,14 @@
+// Apni purani MainActivity.kt kholo. Uski PEHLI line (package ...) jaisi hai waisi hi rehne do.
+// Baaki poori file ko niche wale code se replace kar do.
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import legend.editor.LegendApp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { LegendApp() }
+    }
+}
